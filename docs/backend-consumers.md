@@ -87,6 +87,7 @@ to:
 
 The repository has now proven real backend-driven artifact generation for:
 
+- `00-intake.md`
 - `01-spec.md`
 - `02-plan.md`
 - `06-tasks.md`

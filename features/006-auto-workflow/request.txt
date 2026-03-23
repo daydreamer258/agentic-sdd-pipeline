@@ -1,0 +1,1 @@
+Add an automated workflow runner that supports both full workflow execution and stage-scoped execution. It should chain existing stage preparation, backend consumption, and artifact completion into one command. It must support full flow, single stage, and stage range modes, while staying lightweight and coherent with the repository's current design.

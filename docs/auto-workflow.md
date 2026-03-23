@@ -46,14 +46,14 @@ Run a stage interval.
 
 Current automation coverage:
 
+- `intake` ✅
 - `spec` ✅
 - `plan` ✅
 - `tasks` ✅
 - `validate` ✅
 
-Current non-automated stages:
+Current non-automated stage:
 
-- `intake` → currently expects existing/manual content
 - `implement` → no automated consumer configured yet
 
 ---
@@ -117,3 +117,4 @@ With `auto-workflow.sh`, the project now supports:
 - stage range execution
 
 That is the first step toward a more truly agentic pipeline.
+t step toward a more truly agentic pipeline.

@@ -217,7 +217,8 @@ This is intentionally minimal, but it is enough to prove the workflow skeleton i
 ```
 
 - `feature-summary.sh` prints a lightweight summary of a feature folder's current state and core artifact presence.
-- `consume-stage-with-claude.sh` now proves backend-driven generation for `spec`, `plan`, `tasks`, and `validate`.
+- `consume-stage-with-claude.sh` proves backend-driven generation for `intake`, `spec`, `plan`, `tasks`, and `validate`.
+- `auto-workflow.sh` supports full early-stage flow, single-stage execution, and stage-range execution.
 
 ---
 
@@ -359,6 +360,10 @@ ghts reserved by default**.
 is repository as **all rights reserved by default**.
 ghts reserved by default**.
  has been chosen yet.
+
+Until a license is added, treat this repository as **all rights reserved by default**.
+ghts reserved by default**.
+n yet.
 
 Until a license is added, treat this repository as **all rights reserved by default**.
 ghts reserved by default**.

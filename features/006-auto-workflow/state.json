@@ -1,0 +1,12 @@
+{
+  "feature_id": "006",
+  "feature_slug": "auto-workflow",
+  "feature_title": "auto-workflow",
+  "current_stage": "tasks",
+  "status": "artifact_written",
+  "last_artifact": "06-tasks.md",
+  "next_stage": "implement",
+  "last_updated_at": "2026-03-23T13:18:36Z",
+  "validation_result": "pending",
+  "needs_review": "false"
+}

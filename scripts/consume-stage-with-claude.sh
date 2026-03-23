@@ -16,6 +16,13 @@ if ! command -v claude >/dev/null 2>&1; then
 fi
 
 case "$STAGE" in
+  intake)
+    INPUT_FILE="$FEATURE_DIR/request.txt"
+    OUTPUT_FILE="$FEATURE_DIR/00-intake.md"
+    SKILL_FILE="$ROOT_DIR/skills/sdd-intake/SKILL.md"
+    ROLE_FILE="$ROOT_DIR/subagents/intake-writer.md"
+    TEMPLATE_FILE="$ROOT_DIR/templates/00-intake.md"
+    ;;
   spec)
     INPUT_FILE="$FEATURE_DIR/00-intake.md"
     OUTPUT_FILE="$FEATURE_DIR/01-spec.md"

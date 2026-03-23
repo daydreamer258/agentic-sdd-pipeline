@@ -53,7 +53,7 @@ expected_artifact_for_stage() {
 consume_stage() {
   STAGE="$1"
   case "$STAGE" in
-    spec|plan|tasks|validate)
+    intake|spec|plan|tasks|validate)
       "$ROOT_DIR/scripts/consume-stage-with-claude.sh" "$FEATURE_DIR" "$STAGE"
       ;;
     *)
@@ -69,11 +69,7 @@ run_stage_once() {
 
   "$ROOT_DIR/scripts/execute-stage.sh" "$FEATURE_DIR" "$STAGE"
 
-  if [ "$STAGE" = "intake" ]; then
-    echo "Auto workflow does not synthesize intake content yet. Expecting existing or manually prepared: $FEATURE_DIR/$ARTIFACT"
-  else
-    consume_stage "$STAGE"
-  fi
+  consume_stage "$STAGE"
 
   if [ ! -f "$FEATURE_DIR/$ARTIFACT" ]; then
     echo "expected artifact missing after stage '$STAGE': $FEATURE_DIR/$ARTIFACT" >&2
@@ -125,6 +121,13 @@ END_ORDER=$(stage_order "$END_STAGE")
 IDX=1
 for STAGE in $STAGES; do
   if [ "$IDX" -ge "$START_ORDER" ] && [ "$IDX" -le "$END_ORDER" ]; then
+    run_stage_once "$STAGE"
+  fi
+  IDX=$((IDX + 1))
+done
+
+echo "Auto workflow completed: $FEATURE_DIR ($START_STAGE -> $END_STAGE)"
+T_ORDER" ] && [ "$IDX" -le "$END_ORDER" ]; then
     run_stage_once "$STAGE"
   fi
   IDX=$((IDX + 1))
