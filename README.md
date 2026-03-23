@@ -123,7 +123,9 @@ That means a practical v1 can be built around:
 │   ├── before_stage_transition.sh
 │   └── on_feature_init.sh
 ├── scripts/
-│   └── init-feature.sh
+│   ├── complete-artifact.sh
+│   ├── init-feature.sh
+│   └── run-stage.sh
 ├── templates/
 │   ├── 00-intake.md
 │   ├── 01-spec.md
@@ -207,12 +209,17 @@ This repo currently treats SDD as having three practical maturity levels:
 - [`docs/skills-and-subagents.md`](docs/skills-and-subagents.md)
 - [`docs/stage-rules.md`](docs/stage-rules.md)
 - [`docs/lightweight-v1.md`](docs/lightweight-v1.md)
+- [`docs/runtime-contracts.md`](docs/runtime-contracts.md)
+- [`docs/skill-interfaces.md`](docs/skill-interfaces.md)
+- [`docs/subagent-interfaces.md`](docs/subagent-interfaces.md)
 - [`docs/rollout-plan.md`](docs/rollout-plan.md)
 
-### Hook and template layer
+### Hook and runtime layer
 - [`hooks/README.md`](hooks/README.md)
 - [`templates/`](templates/)
 - [`scripts/init-feature.sh`](scripts/init-feature.sh)
+- [`scripts/run-stage.sh`](scripts/run-stage.sh)
+- [`scripts/complete-artifact.sh`](scripts/complete-artifact.sh)
 
 ---
 
