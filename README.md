@@ -25,13 +25,13 @@ This project studies how to build an AI coding workflow that is:
 
 In short:
 
-> **Use specifications, plans, tasks, validation artifacts, and lightweight hooks to turn agentic coding into an engineering pipeline.**
+> **Use specifications, plans, tasks, validation artifacts, lightweight hooks, and explicit prompt-layer roles to turn agentic coding into an engineering pipeline.**
 
 ---
 
 ## Current status
 
-This repository has now moved beyond pure research notes.
+This repository has moved beyond pure research notes.
 
 It currently contains:
 
@@ -41,9 +41,12 @@ It currently contains:
 - stage rules
 - minimal artifact templates
 - hook skeletons
-- a tiny runnable scaffold for initializing a feature folder
+- runtime wiring and handler dispatch
+- stage-specific Skill prompts
+- role-specific Subagent prompts
+- real pilot features and runtime demos
 
-This means the repo now contains a **lightweight runnable skeleton**, not just theory.
+This means the repo now contains a **lightweight runnable skeleton with a real prompt layer**, not just theory.
 
 ---
 
@@ -108,13 +111,19 @@ That means a practical v1 can be built around:
 ├── docs/
 │   ├── artifact-model.md
 │   ├── lightweight-v1.md
+│   ├── prompt-layer.md
 │   ├── rollout-plan.md
+│   ├── runtime-contracts.md
+│   ├── runtime-wiring.md
 │   ├── shareable-overview.md
+│   ├── skill-interfaces.md
 │   ├── skills-and-subagents.md
 │   ├── stage-rules.md
+│   ├── subagent-interfaces.md
 │   └── system-design.md
 ├── examples/
-│   └── 001-demo-search/
+│   ├── 001-demo-search/
+│   └── 002-runtime-demo/
 ├── hooks/
 │   ├── README.md
 │   ├── after_artifact_write.sh
@@ -122,10 +131,26 @@ That means a practical v1 can be built around:
 │   ├── before_implement.sh
 │   ├── before_stage_transition.sh
 │   └── on_feature_init.sh
+├── runtime/
+│   └── handlers/
+├── skills/
+│   ├── sdd-intake/
+│   ├── sdd-plan/
+│   ├── sdd-spec/
+│   ├── sdd-tasks/
+│   └── sdd-validate/
+├── subagents/
+│   ├── planner.md
+│   ├── spec-writer.md
+│   ├── task-decomposer.md
+│   └── validator.md
 ├── scripts/
 │   ├── complete-artifact.sh
+│   ├── execute-stage.sh
+│   ├── feature-summary.sh
 │   ├── init-feature.sh
-│   └── run-stage.sh
+│   ├── run-stage.sh
+│   └── state-lib.sh
 ├── templates/
 │   ├── 00-intake.md
 │   ├── 01-spec.md
@@ -147,6 +172,8 @@ The current repo includes a minimal runnable path.
 - scaffold a feature folder
 - create baseline artifacts from templates
 - gate stage transitions using hooks
+- dispatch stage handlers through runtime wiring
+- maintain richer `state.json` metadata
 - check implementation prerequisites before entering implementation
 
 ### Quick demo
@@ -171,7 +198,7 @@ After this, the feature folder contains:
 
 This is intentionally minimal, but it is enough to prove the workflow skeleton is executable.
 
-A small real pilot utility has also been added:
+### Included pilot utility
 
 ```sh
 ./scripts/feature-summary.sh ./features/002-runtime-demo
@@ -218,8 +245,10 @@ This repo currently treats SDD as having three practical maturity levels:
 - [`docs/stage-rules.md`](docs/stage-rules.md)
 - [`docs/lightweight-v1.md`](docs/lightweight-v1.md)
 - [`docs/runtime-contracts.md`](docs/runtime-contracts.md)
+- [`docs/runtime-wiring.md`](docs/runtime-wiring.md)
 - [`docs/skill-interfaces.md`](docs/skill-interfaces.md)
 - [`docs/subagent-interfaces.md`](docs/subagent-interfaces.md)
+- [`docs/prompt-layer.md`](docs/prompt-layer.md)
 - [`docs/rollout-plan.md`](docs/rollout-plan.md)
 
 ### Hook and runtime layer
@@ -231,6 +260,10 @@ This repo currently treats SDD as having three practical maturity levels:
 - [`scripts/complete-artifact.sh`](scripts/complete-artifact.sh)
 - [`scripts/feature-summary.sh`](scripts/feature-summary.sh)
 - [`runtime/handlers/`](runtime/handlers/)
+
+### Prompt layer
+- [`skills/`](skills/)
+- [`subagents/`](subagents/)
 
 ---
 
@@ -248,7 +281,7 @@ This repository is relevant if you are:
 
 ## Project status
 
-This repository is currently in the **lightweight runnable v1 skeleton** stage.
+This repository is currently in the **lightweight runnable v1 skeleton with runtime wiring and prompt layer** stage.
 
 What has been done:
 
@@ -258,17 +291,18 @@ What has been done:
 - defined a lightweight v1 model
 - created minimal templates
 - created hook skeletons
-- verified the basic scaffold path works locally
 - added runtime wiring, handler dispatch, and stronger state management
+- added stage-specific Skill prompt files
+- added role-specific Subagent prompt files
+- ran real pilot features through the workflow
 
 What comes next:
 
-- refine templates
-- define stronger stage metadata
-- add richer validation behavior
-- pilot a real feature through the workflow
-- tighten Skills/Subagent boundaries
-- add implementation examples
+- wire the prompt layer to real execution backends
+- refine templates based on more pilots
+- strengthen validation behavior
+- add retrospective flow
+- run more diverse pilot features
 
 ---
 
@@ -294,13 +328,3 @@ A fuller reference list is included in:
 No license has been chosen yet.
 
 Until a license is added, treat this repository as **all rights reserved by default**.
-
-
----
-
-## License
-
-No license has been chosen yet.
-
-Until a license is added, treat this repository as **all rights reserved by default**.
-**.
