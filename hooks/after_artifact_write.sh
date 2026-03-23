@@ -8,13 +8,8 @@ fi
 
 FEATURE_DIR="$1"
 ARTIFACT_PATH="$2"
-STATE_FILE="$FEATURE_DIR/state.json"
-
-if [ -f "$STATE_FILE" ]; then
-  TMP_FILE="$STATE_FILE.tmp"
-  # lightweight append-style note without requiring jq
-  cp "$STATE_FILE" "$TMP_FILE"
-  mv "$TMP_FILE" "$STATE_FILE"
-fi
 
 echo "Artifact written: $ARTIFACT_PATH"
+if [ -f "$FEATURE_DIR/state.json" ]; then
+  echo "State file present: $FEATURE_DIR/state.json"
+fi

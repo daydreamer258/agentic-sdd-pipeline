@@ -153,10 +153,10 @@ The current repo includes a minimal runnable path.
 
 ```sh
 ./scripts/init-feature.sh 001 demo-search "Demo Search"
-./hooks/before_stage_transition.sh ./features/001-demo-search spec
-./hooks/before_stage_transition.sh ./features/001-demo-search plan
-./hooks/before_stage_transition.sh ./features/001-demo-search tasks
-./hooks/before_implement.sh ./features/001-demo-search
+./scripts/execute-stage.sh ./features/001-demo-search intake
+./scripts/complete-artifact.sh ./features/001-demo-search 00-intake.md
+./scripts/execute-stage.sh ./features/001-demo-search spec
+./scripts/complete-artifact.sh ./features/001-demo-search 01-spec.md
 ```
 
 After this, the feature folder contains:
@@ -227,7 +227,10 @@ This repo currently treats SDD as having three practical maturity levels:
 - [`templates/`](templates/)
 - [`scripts/init-feature.sh`](scripts/init-feature.sh)
 - [`scripts/run-stage.sh`](scripts/run-stage.sh)
+- [`scripts/execute-stage.sh`](scripts/execute-stage.sh)
 - [`scripts/complete-artifact.sh`](scripts/complete-artifact.sh)
+- [`scripts/feature-summary.sh`](scripts/feature-summary.sh)
+- [`runtime/handlers/`](runtime/handlers/)
 
 ---
 
@@ -256,6 +259,7 @@ What has been done:
 - created minimal templates
 - created hook skeletons
 - verified the basic scaffold path works locally
+- added runtime wiring, handler dispatch, and stronger state management
 
 What comes next:
 
@@ -290,3 +294,13 @@ A fuller reference list is included in:
 No license has been chosen yet.
 
 Until a license is added, treat this repository as **all rights reserved by default**.
+
+
+---
+
+## License
+
+No license has been chosen yet.
+
+Until a license is added, treat this repository as **all rights reserved by default**.
+**.

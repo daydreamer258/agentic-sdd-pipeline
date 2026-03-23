@@ -10,6 +10,7 @@ FEATURE_DIR="$1"
 ARTIFACT_PATH="$2"
 ROOT_DIR="$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)"
 STATE_FILE="$FEATURE_DIR/state.json"
+. "$ROOT_DIR/scripts/state-lib.sh"
 
 if [ ! -f "$FEATURE_DIR/$ARTIFACT_PATH" ]; then
   echo "artifact does not exist: $FEATURE_DIR/$ARTIFACT_PATH" >&2
@@ -20,18 +21,24 @@ if [ -x "$ROOT_DIR/hooks/after_artifact_write.sh" ]; then
   "$ROOT_DIR/hooks/after_artifact_write.sh" "$FEATURE_DIR" "$ARTIFACT_PATH"
 fi
 
-CURRENT_STAGE="unknown"
-STATUS="artifact_written"
-if [ -f "$STATE_FILE" ]; then
-  CURRENT_STAGE=$(grep -o '"current_stage": "[^"]*"' "$STATE_FILE" | head -n1 | cut -d'"' -f4 || true)
-fi
+FEATURE_ID=$(state_get "$STATE_FILE" feature_id)
+FEATURE_SLUG=$(state_get "$STATE_FILE" feature_slug)
+FEATURE_TITLE=$(state_get "$STATE_FILE" feature_title)
+CURRENT_STAGE=$(state_get "$STATE_FILE" current_stage)
+NEXT_STAGE=$(next_stage_for_artifact "$ARTIFACT_PATH")
+VALIDATION_RESULT=$(state_get "$STATE_FILE" validation_result)
+NEEDS_REVIEW=$(state_get "$STATE_FILE" needs_review)
 
-cat > "$STATE_FILE" <<EOF
-{
-  "current_stage": "$CURRENT_STAGE",
-  "status": "$STATUS",
-  "last_artifact": "$ARTIFACT_PATH"
-}
-EOF
+state_write "$STATE_FILE" \
+  "$FEATURE_ID" \
+  "$FEATURE_SLUG" \
+  "$FEATURE_TITLE" \
+  "$CURRENT_STAGE" \
+  "artifact_written" \
+  "$ARTIFACT_PATH" \
+  "$NEXT_STAGE" \
+  "$(state_now)" \
+  "${VALIDATION_RESULT:-pending}" \
+  "${NEEDS_REVIEW:-false}"
 
 echo "Recorded artifact completion: $ARTIFACT_PATH"
