@@ -171,6 +171,14 @@ After this, the feature folder contains:
 
 This is intentionally minimal, but it is enough to prove the workflow skeleton is executable.
 
+A small real pilot utility has also been added:
+
+```sh
+./scripts/feature-summary.sh ./features/002-runtime-demo
+```
+
+This prints a lightweight summary of a feature folder's current state and core artifact presence.
+
 ---
 
 ## Recommended maturity model
