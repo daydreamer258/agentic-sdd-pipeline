@@ -248,6 +248,10 @@ This repo currently treats SDD as having three practical maturity levels:
 
 ## Core documents
 
+### 中文说明
+- [`docs/项目介绍说明.md`](docs/项目介绍说明.md)
+- [`docs/命令使用说明.md`](docs/命令使用说明.md)
+
 ### Overview and research
 - [`docs/shareable-overview.md`](docs/shareable-overview.md)
 
