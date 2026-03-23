@@ -6,6 +6,7 @@ This repository focuses on a practical constraint that many real systems have:
 
 - you may have **Skills**
 - you may have **Subagents**
+- you may have **Hooks**
 - but you may **not** have full-blown **Agent Teams**
 
 The goal of this project is to explore how far a disciplined, artifact-driven SDD workflow can go in that environment.
@@ -19,12 +20,30 @@ This project studies how to build an AI coding workflow that is:
 - faster than traditional handoffs
 - more reliable than raw vibe coding
 - structured enough for real engineering work
-- composable with Skills + Subagents
+- composable with Skills + Subagents + Hooks
 - suitable for future system design and implementation
 
 In short:
 
-> **Use specifications, plans, tasks, and validation artifacts to turn agentic coding into an engineering pipeline.**
+> **Use specifications, plans, tasks, validation artifacts, and lightweight hooks to turn agentic coding into an engineering pipeline.**
+
+---
+
+## Current status
+
+This repository has now moved beyond pure research notes.
+
+It currently contains:
+
+- shareable background research
+- v1 system design docs
+- a lightweight v1 definition
+- stage rules
+- minimal artifact templates
+- hook skeletons
+- a tiny runnable scaffold for initializing a feature folder
+
+This means the repo now contains a **lightweight runnable skeleton**, not just theory.
 
 ---
 
@@ -67,7 +86,7 @@ intent -> spec -> plan -> tasks -> implementation -> validation
 The working thesis of this repo is:
 
 > A serious agentic coding system does **not** need heavyweight agent-team orchestration first.
-> It can start with **one orchestrator**, **phase-specific Skills**, **specialized Subagents**, and a strong **artifact model**.
+> It can start with **one orchestrator**, **phase-specific Skills**, **specialized Subagents**, a strong **artifact model**, and a small set of **Hooks**.
 
 That means a practical v1 can be built around:
 
@@ -75,6 +94,7 @@ That means a practical v1 can be built around:
 - explicit phases
 - reusable Skills for each phase
 - Subagents for specialized execution
+- Hooks for stage gating and scaffolding
 - feature folders with traceable artifacts
 - validation and retrospective loops
 
@@ -85,25 +105,69 @@ That means a practical v1 can be built around:
 ```text
 .
 ├── README.md
-└── docs/
-    └── shareable-overview.md
-```
-
-As the project evolves, this repository will likely grow to include:
-
-```text
-.
-├── README.md
 ├── docs/
-│   ├── shareable-overview.md
-│   ├── system-design.md
 │   ├── artifact-model.md
+│   ├── lightweight-v1.md
+│   ├── rollout-plan.md
+│   ├── shareable-overview.md
 │   ├── skills-and-subagents.md
-│   └── rollout-plan.md
-├── templates/
+│   ├── stage-rules.md
+│   └── system-design.md
 ├── examples/
-└── references/
+│   └── 001-demo-search/
+├── hooks/
+│   ├── README.md
+│   ├── after_artifact_write.sh
+│   ├── after_validation.sh
+│   ├── before_implement.sh
+│   ├── before_stage_transition.sh
+│   └── on_feature_init.sh
+├── scripts/
+│   └── init-feature.sh
+├── templates/
+│   ├── 00-intake.md
+│   ├── 01-spec.md
+│   ├── 02-plan.md
+│   ├── 06-tasks.md
+│   ├── 07-implementation-log.md
+│   └── 08-validation.md
+└── features/
 ```
+
+---
+
+## Runnable lightweight v1
+
+The current repo includes a minimal runnable path.
+
+### What it can do right now
+
+- scaffold a feature folder
+- create baseline artifacts from templates
+- gate stage transitions using hooks
+- check implementation prerequisites before entering implementation
+
+### Quick demo
+
+```sh
+./scripts/init-feature.sh 001 demo-search "Demo Search"
+./hooks/before_stage_transition.sh ./features/001-demo-search spec
+./hooks/before_stage_transition.sh ./features/001-demo-search plan
+./hooks/before_stage_transition.sh ./features/001-demo-search tasks
+./hooks/before_implement.sh ./features/001-demo-search
+```
+
+After this, the feature folder contains:
+
+- `00-intake.md`
+- `01-spec.md`
+- `02-plan.md`
+- `06-tasks.md`
+- `07-implementation-log.md`
+- `08-validation.md`
+- `state.json`
+
+This is intentionally minimal, but it is enough to prove the workflow skeleton is executable.
 
 ---
 
@@ -132,26 +196,23 @@ This repo currently treats SDD as having three practical maturity levels:
 
 ---
 
-## What a practical SDD loop looks like
+## Core documents
 
-A useful working loop is:
+### Overview and research
+- [`docs/shareable-overview.md`](docs/shareable-overview.md)
 
-```text
-Intake / Clarify
--> Specify
--> Plan
--> Task Decomposition
--> Implement
--> Validate / Review
--> Feed lessons back into specs, plans, and process
-```
+### System design
+- [`docs/system-design.md`](docs/system-design.md)
+- [`docs/artifact-model.md`](docs/artifact-model.md)
+- [`docs/skills-and-subagents.md`](docs/skills-and-subagents.md)
+- [`docs/stage-rules.md`](docs/stage-rules.md)
+- [`docs/lightweight-v1.md`](docs/lightweight-v1.md)
+- [`docs/rollout-plan.md`](docs/rollout-plan.md)
 
-This creates an engineering loop where:
-
-- every implementation traces back to tasks
-- every task traces back to a plan/spec
-- validation checks conformance, not just test pass/fail
-- repeated failures improve upstream artifacts and process memory
+### Hook and template layer
+- [`hooks/README.md`](hooks/README.md)
+- [`templates/`](templates/)
+- [`scripts/init-feature.sh`](scripts/init-feature.sh)
 
 ---
 
@@ -162,46 +223,33 @@ This repository is relevant if you are:
 - designing an internal agentic coding platform
 - experimenting with AI-native software engineering workflows
 - trying to apply SDD in a practical way
-- working in a constrained runtime that supports only Skills + Subagents
+- working in a constrained runtime that supports only Skills + Subagents + Hooks
 - interested in turning research into a real engineering pipeline
-
----
-
-## Current document
-
-The main shareable research write-up currently lives here:
-
-- [`docs/shareable-overview.md`](docs/shareable-overview.md)
-
-It covers:
-
-- the Claude Code / agentic coding mental model
-- what SDD is and why it matters
-- how SDD differs from raw vibe coding
-- why artifacts matter more than just adding more agents
-- how to adapt SDD to a `skills + subagents` runtime
-- what a strong v1 architecture should look like
 
 ---
 
 ## Project status
 
-This repository is currently in the **research and synthesis** stage.
+This repository is currently in the **lightweight runnable v1 skeleton** stage.
 
 What has been done:
 
 - gathered public material on SDD and agentic coding
 - synthesized a shareable overview
-- distilled a practical direction for a v1 pipeline
+- wrote system design documents
+- defined a lightweight v1 model
+- created minimal templates
+- created hook skeletons
+- verified the basic scaffold path works locally
 
 What comes next:
 
-- formal system design
-- artifact model definition
-- Skill boundary design
-- Subagent responsibility design
-- rollout planning
-- implementation prototypes
+- refine templates
+- define stronger stage metadata
+- add richer validation behavior
+- pilot a real feature through the workflow
+- tighten Skills/Subagent boundaries
+- add implementation examples
 
 ---
 
