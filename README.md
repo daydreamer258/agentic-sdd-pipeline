@@ -47,8 +47,10 @@ It currently contains:
 - stage bundle generation for execution handoff
 - real pilot features and runtime demos
 - first real backend-driven stages using Claude Code CLI
+- automated workflow runner for full / single / range modes
+- experimental implement-stage wiring with safety controls
 
-This means the repo now contains a **lightweight runnable skeleton with a real prompt layer, execution bundles, and backend consumption**, not just theory.
+This means the repo now contains a **lightweight runnable skeleton with a real prompt layer, execution bundles, backend consumption, and early workflow automation**, not just theory.
 
 ---
 
@@ -112,11 +114,16 @@ That means a practical v1 can be built around:
 ├── README.md
 ├── docs/
 │   ├── artifact-model.md
+│   ├── auto-workflow.md
 │   ├── backend-consumers.md
+│   ├── checkpoint-policy.md
 │   ├── execution-integration.md
+│   ├── implement-automation-notes.md
+│   ├── implement-safety-policy.md
 │   ├── lightweight-v1.md
 │   ├── prompt-layer.md
 │   ├── rollout-plan.md
+│   ├── runtime-artifacts-policy.md
 │   ├── runtime-contracts.md
 │   ├── runtime-wiring.md
 │   ├── shareable-overview.md
@@ -124,6 +131,8 @@ That means a practical v1 can be built around:
 │   ├── skills-and-subagents.md
 │   ├── stage-rules.md
 │   ├── subagent-interfaces.md
+│   ├── 命令使用说明.md
+│   ├── 项目介绍说明.md
 │   └── system-design.md
 ├── examples/
 │   ├── 001-demo-search/
@@ -138,22 +147,28 @@ That means a practical v1 can be built around:
 ├── runtime/
 │   └── handlers/
 ├── skills/
+│   ├── sdd-implement/
 │   ├── sdd-intake/
 │   ├── sdd-plan/
 │   ├── sdd-spec/
 │   ├── sdd-tasks/
 │   └── sdd-validate/
 ├── subagents/
+│   ├── implementer.md
+│   ├── intake-writer.md
 │   ├── planner.md
 │   ├── spec-writer.md
 │   ├── task-decomposer.md
 │   └── validator.md
 ├── scripts/
+│   ├── auto-workflow.sh
+│   ├── assess-implement-risk.sh
 │   ├── build-stage-bundle.sh
 │   ├── complete-artifact.sh
 │   ├── consume-stage-with-claude.sh
 │   ├── execute-stage.sh
 │   ├── feature-summary.sh
+│   ├── implement-checkpoint.sh
 │   ├── init-feature.sh
 │   ├── run-stage.sh
 │   └── state-lib.sh
@@ -169,9 +184,15 @@ That means a practical v1 can be built around:
 
 ---
 
-## Runnable lightweight v1
+## Runnable lightweight workflow
 
-The current repo includes a minimal runnable path.
+The current repo supports:
+
+- stage-by-stage execution
+- stage-range execution
+- early full workflow execution
+- backend consumption for early text-centric stages
+- experimental implement-stage wiring with safety controls
 
 ### What it can do right now
 
@@ -181,32 +202,11 @@ The current repo includes a minimal runnable path.
 - dispatch stage handlers through runtime wiring
 - maintain richer `state.json` metadata
 - generate stage bundles for execution handoff
-- let a real Claude Code backend consume the `spec`, `plan`, `tasks`, and `validate` stages
-- check implementation prerequisites before entering implementation
+- let a real Claude Code backend consume the `intake`, `spec`, `plan`, `tasks`, and `validate` stages
+- run automated workflows in `full`, `single`, and `range` modes
+- apply risk assessment and checkpoint generation around `implement`
 
-### Quick demo
-
-```sh
-./scripts/init-feature.sh 001 demo-search "Demo Search"
-./scripts/execute-stage.sh ./features/001-demo-search intake
-./scripts/complete-artifact.sh ./features/001-demo-search 00-intake.md
-./scripts/execute-stage.sh ./features/001-demo-search spec
-./scripts/complete-artifact.sh ./features/001-demo-search 01-spec.md
-```
-
-After this, the feature folder contains:
-
-- `00-intake.md`
-- `01-spec.md`
-- `02-plan.md`
-- `06-tasks.md`
-- `07-implementation-log.md`
-- `08-validation.md`
-- `state.json`
-
-This is intentionally minimal, but it is enough to prove the workflow skeleton is executable.
-
-### Included pilot utilities
+### Example commands
 
 ```sh
 ./scripts/feature-summary.sh ./features/002-runtime-demo
@@ -214,11 +214,10 @@ This is intentionally minimal, but it is enough to prove the workflow skeleton i
 ./scripts/consume-stage-with-claude.sh ./features/005-claude-spec-consumer plan
 ./scripts/consume-stage-with-claude.sh ./features/005-claude-spec-consumer tasks
 ./scripts/consume-stage-with-claude.sh ./features/005-claude-spec-consumer validate
+./scripts/auto-workflow.sh ./features/006-auto-workflow full intake tasks
+./scripts/auto-workflow.sh ./features/005-claude-spec-consumer single validate
+./scripts/auto-workflow.sh ./features/005-claude-spec-consumer range plan tasks
 ```
-
-- `feature-summary.sh` prints a lightweight summary of a feature folder's current state and core artifact presence.
-- `consume-stage-with-claude.sh` proves backend-driven generation for `intake`, `spec`, `plan`, `tasks`, and `validate`.
-- `auto-workflow.sh` supports full early-stage flow, single-stage execution, and stage-range execution.
 
 ---
 
@@ -274,21 +273,11 @@ This repo currently treats SDD as having three practical maturity levels:
 - [`docs/prompt-layer.md`](docs/prompt-layer.md)
 - [`docs/rollout-plan.md`](docs/rollout-plan.md)
 
-### Hook and runtime layer
-- [`hooks/README.md`](hooks/README.md)
-- [`templates/`](templates/)
-- [`scripts/init-feature.sh`](scripts/init-feature.sh)
-- [`scripts/run-stage.sh`](scripts/run-stage.sh)
-- [`scripts/execute-stage.sh`](scripts/execute-stage.sh)
-- [`scripts/build-stage-bundle.sh`](scripts/build-stage-bundle.sh)
-- [`scripts/consume-stage-with-claude.sh`](scripts/consume-stage-with-claude.sh)
-- [`scripts/complete-artifact.sh`](scripts/complete-artifact.sh)
-- [`scripts/feature-summary.sh`](scripts/feature-summary.sh)
-- [`runtime/handlers/`](runtime/handlers/)
-
-### Prompt layer
-- [`skills/`](skills/)
-- [`subagents/`](subagents/)
+### Safety / policy
+- [`docs/implement-safety-policy.md`](docs/implement-safety-policy.md)
+- [`docs/checkpoint-policy.md`](docs/checkpoint-policy.md)
+- [`docs/runtime-artifacts-policy.md`](docs/runtime-artifacts-policy.md)
+- [`docs/implement-automation-notes.md`](docs/implement-automation-notes.md)
 
 ---
 
@@ -306,7 +295,7 @@ This repository is relevant if you are:
 
 ## Project status
 
-This repository is currently in the **lightweight runnable v1 skeleton with runtime wiring, prompt layer, execution bundles, and backend-driven early-stage loop** stage.
+This repository is currently in the **lightweight runnable v1 skeleton with runtime wiring, prompt layer, execution bundles, backend-driven early-stage loop, workflow chaining, and experimental implement safety controls** stage.
 
 What has been done:
 
@@ -320,16 +309,18 @@ What has been done:
 - added stage-specific Skill prompt files
 - added role-specific Subagent prompt files
 - added stage bundle generation to connect runtime state with prompt files
-- proved real backend consumption with Claude Code on the `spec`, `plan`, `tasks`, and `validate` stages
+- proved real backend consumption with Claude Code on the `intake`, `spec`, `plan`, `tasks`, and `validate` stages
+- added automated workflow execution for full / single / range modes
+- added experimental implement-stage wiring and safety/checkpoint policy
 - ran real pilot features through the workflow
 
 What comes next:
 
-- decide whether `.runtime/` execution artifacts should remain versioned long-term
+- validate the experimental `implement` stage more thoroughly
 - reduce prompt duplication by leaning more on stage bundles
-- add retrospective flow
+- refine templates based on more pilots
 - strengthen validation behavior
-- consider auto-complete / auto-chain after successful backend consumption
+- improve checkpoint/approval UX
 - run more diverse pilot features
 
 ---
@@ -356,14 +347,3 @@ A fuller reference list is included in:
 No license has been chosen yet.
 
 Until a license is added, treat this repository as **all rights reserved by default**.
-ghts reserved by default**.
-is repository as **all rights reserved by default**.
-ghts reserved by default**.
- has been chosen yet.
-
-Until a license is added, treat this repository as **all rights reserved by default**.
-ghts reserved by default**.
-n yet.
-
-Until a license is added, treat this repository as **all rights reserved by default**.
-ghts reserved by default**.

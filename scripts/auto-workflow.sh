@@ -70,6 +70,18 @@ run_stage_once() {
   ARTIFACT=$(expected_artifact_for_stage "$STAGE")
 
   "$ROOT_DIR/scripts/execute-stage.sh" "$FEATURE_DIR" "$STAGE"
+
+  if [ "$STAGE" = "implement" ]; then
+    RISK_INFO=$("$ROOT_DIR/scripts/assess-implement-risk.sh" "$FEATURE_DIR")
+    RISK=$(printf '%s\n' "$RISK_INFO" | grep '^risk=' | cut -d'=' -f2)
+
+    if [ "$RISK" = "medium" ] || [ "$RISK" = "high" ]; then
+      CHECKPOINT_FILE=$("$ROOT_DIR/scripts/implement-checkpoint.sh" "$FEATURE_DIR" "$RISK")
+      echo "Implement checkpoint required: $CHECKPOINT_FILE"
+      exit 4
+    fi
+  fi
+
   consume_stage "$STAGE"
 
   if [ ! -f "$FEATURE_DIR/$ARTIFACT" ]; then
