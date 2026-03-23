@@ -111,6 +111,8 @@ That means a practical v1 can be built around:
 ├── README.md
 ├── docs/
 │   ├── artifact-model.md
+│   ├── backend-consumers.md
+│   ├── execution-integration.md
 │   ├── lightweight-v1.md
 │   ├── prompt-layer.md
 │   ├── rollout-plan.md
@@ -146,7 +148,9 @@ That means a practical v1 can be built around:
 │   ├── task-decomposer.md
 │   └── validator.md
 ├── scripts/
+│   ├── build-stage-bundle.sh
 │   ├── complete-artifact.sh
+│   ├── consume-stage-with-claude.sh
 │   ├── execute-stage.sh
 │   ├── feature-summary.sh
 │   ├── init-feature.sh
@@ -175,6 +179,8 @@ The current repo includes a minimal runnable path.
 - gate stage transitions using hooks
 - dispatch stage handlers through runtime wiring
 - maintain richer `state.json` metadata
+- generate stage bundles for execution handoff
+- let a real Claude Code backend consume the `spec` stage and produce `01-spec.md`
 - check implementation prerequisites before entering implementation
 
 ### Quick demo
@@ -199,13 +205,15 @@ After this, the feature folder contains:
 
 This is intentionally minimal, but it is enough to prove the workflow skeleton is executable.
 
-### Included pilot utility
+### Included pilot utilities
 
 ```sh
 ./scripts/feature-summary.sh ./features/002-runtime-demo
+./scripts/consume-stage-with-claude.sh ./features/005-claude-spec-consumer spec
 ```
 
-This prints a lightweight summary of a feature folder's current state and core artifact presence.
+- `feature-summary.sh` prints a lightweight summary of a feature folder's current state and core artifact presence.
+- `consume-stage-with-claude.sh` proves first backend consumption for the `spec` stage.
 
 ---
 
@@ -247,6 +255,8 @@ This repo currently treats SDD as having three practical maturity levels:
 - [`docs/lightweight-v1.md`](docs/lightweight-v1.md)
 - [`docs/runtime-contracts.md`](docs/runtime-contracts.md)
 - [`docs/runtime-wiring.md`](docs/runtime-wiring.md)
+- [`docs/execution-integration.md`](docs/execution-integration.md)
+- [`docs/backend-consumers.md`](docs/backend-consumers.md)
 - [`docs/skill-interfaces.md`](docs/skill-interfaces.md)
 - [`docs/subagent-interfaces.md`](docs/subagent-interfaces.md)
 - [`docs/prompt-layer.md`](docs/prompt-layer.md)
@@ -258,6 +268,8 @@ This repo currently treats SDD as having three practical maturity levels:
 - [`scripts/init-feature.sh`](scripts/init-feature.sh)
 - [`scripts/run-stage.sh`](scripts/run-stage.sh)
 - [`scripts/execute-stage.sh`](scripts/execute-stage.sh)
+- [`scripts/build-stage-bundle.sh`](scripts/build-stage-bundle.sh)
+- [`scripts/consume-stage-with-claude.sh`](scripts/consume-stage-with-claude.sh)
 - [`scripts/complete-artifact.sh`](scripts/complete-artifact.sh)
 - [`scripts/feature-summary.sh`](scripts/feature-summary.sh)
 - [`runtime/handlers/`](runtime/handlers/)
@@ -282,7 +294,7 @@ This repository is relevant if you are:
 
 ## Project status
 
-This repository is currently in the **lightweight runnable v1 skeleton with runtime wiring and prompt layer** stage.
+This repository is currently in the **lightweight runnable v1 skeleton with runtime wiring, prompt layer, execution bundles, and first backend consumption** stage.
 
 What has been done:
 
@@ -295,11 +307,14 @@ What has been done:
 - added runtime wiring, handler dispatch, and stronger state management
 - added stage-specific Skill prompt files
 - added role-specific Subagent prompt files
+- added stage bundle generation to connect runtime state with prompt files
+- proved first backend consumption with Claude Code on the `spec` stage
 - ran real pilot features through the workflow
 
 What comes next:
 
-- wire stage bundles to real execution backends
+- extend backend consumers beyond `spec`
+- reduce prompt duplication by leaning more on stage bundles
 - refine templates based on more pilots
 - strengthen validation behavior
 - add retrospective flow
@@ -329,7 +344,3 @@ A fuller reference list is included in:
 No license has been chosen yet.
 
 Until a license is added, treat this repository as **all rights reserved by default**.
-reserved by default**.
-ved by default**.
- **all rights reserved by default**.
-t**.

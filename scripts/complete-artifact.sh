@@ -28,6 +28,12 @@ CURRENT_STAGE=$(state_get "$STATE_FILE" current_stage)
 NEXT_STAGE=$(next_stage_for_artifact "$ARTIFACT_PATH")
 VALIDATION_RESULT=$(state_get "$STATE_FILE" validation_result)
 NEEDS_REVIEW=$(state_get "$STATE_FILE" needs_review)
+FEATURE_ID=${FEATURE_ID:-$(feature_derive_id "$FEATURE_DIR")}
+FEATURE_SLUG=${FEATURE_SLUG:-$(feature_derive_slug "$FEATURE_DIR")}
+FEATURE_TITLE=${FEATURE_TITLE:-$FEATURE_SLUG}
+CURRENT_STAGE=${CURRENT_STAGE:-unknown}
+VALIDATION_RESULT=${VALIDATION_RESULT:-pending}
+NEEDS_REVIEW=${NEEDS_REVIEW:-false}
 
 state_write "$STATE_FILE" \
   "$FEATURE_ID" \

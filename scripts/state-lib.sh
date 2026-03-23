@@ -13,6 +13,16 @@ state_get() {
   grep -o '"'"$KEY"'": "[^"]*"' "$FILE" 2>/dev/null | head -n1 | cut -d'"' -f4 || true
 }
 
+feature_derive_id() {
+  BASENAME=$(basename "$1")
+  printf '%s' "$BASENAME" | cut -d'-' -f1
+}
+
+feature_derive_slug() {
+  BASENAME=$(basename "$1")
+  printf '%s' "$BASENAME" | cut -d'-' -f2-
+}
+
 state_write() {
   FILE="$1"
   FEATURE_ID="${2:-}"

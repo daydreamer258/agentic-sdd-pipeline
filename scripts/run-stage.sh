@@ -29,6 +29,9 @@ FEATURE_ID=$(state_get "$STATE_FILE" feature_id)
 FEATURE_SLUG=$(state_get "$STATE_FILE" feature_slug)
 FEATURE_TITLE=$(state_get "$STATE_FILE" feature_title)
 LAST_ARTIFACT=$(state_get "$STATE_FILE" last_artifact)
+FEATURE_ID=${FEATURE_ID:-$(feature_derive_id "$FEATURE_DIR")}
+FEATURE_SLUG=${FEATURE_SLUG:-$(feature_derive_slug "$FEATURE_DIR")}
+FEATURE_TITLE=${FEATURE_TITLE:-$FEATURE_SLUG}
 
 case "$STAGE" in
   intake)
