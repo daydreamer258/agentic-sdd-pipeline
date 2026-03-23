@@ -50,11 +50,8 @@ Current automation coverage:
 - `spec` ✅
 - `plan` ✅
 - `tasks` ✅
+- `implement` ✅ (bounded / experimental)
 - `validate` ✅
-
-Current non-automated stage:
-
-- `implement` → no automated consumer configured yet
 
 ---
 
@@ -99,10 +96,10 @@ The current auto workflow intentionally remains lightweight.
 
 It does not yet:
 
-- synthesize `intake` automatically
-- automate `implement`
+- robustly validate implementation quality beyond the current lightweight pattern
 - recover from backend failures beyond exiting with an error
 - support multiple backends through a shared adapter layer
+- provide a polished checkpoint policy for when implement should run automatically vs require approval
 
 ---
 

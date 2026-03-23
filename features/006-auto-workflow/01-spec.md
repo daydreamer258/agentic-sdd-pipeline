@@ -2,7 +2,7 @@
 
 ## Problem Statement
 
-Advancing a feature through the SDD pipeline currently requires manually invoking each stage's prepare-consume-complete cycle one at a time. This is repetitive, error-prone, and creates a high barrier for contributors unfamiliar with the individual scripts. There is no single command that can orchestrate multiple stages in sequence.
+Advancing a feature through the SDD pipeline currently requires manually invoking each stage's prepare → consume → complete cycle one at a time. This is repetitive, error-prone, and creates a high barrier for contributors unfamiliar with the individual scripts. There is no single command that can orchestrate multiple stages in sequence, making the pipeline unusable in CI-like or automated contexts without custom wrapper scripts.
 
 ## Users / Actors
 
@@ -11,7 +11,7 @@ Advancing a feature through the SDD pipeline currently requires manually invokin
 
 ## Desired Behavior
 
-The system should provide a single entry-point shell script (`auto-workflow.sh` or equivalent) that accepts a feature directory and a mode flag, then orchestrates the existing stage scripts accordingly.
+The system provides a single entry-point shell script (the "auto-workflow runner") that accepts a feature directory and a mode flag, then orchestrates the existing stage scripts accordingly.
 
 **Modes:**
 
@@ -25,6 +25,7 @@ The system should provide a single entry-point shell script (`auto-workflow.sh` 
 - Stage ordering follows the pipeline's established convention (stage numbering / template ordering).
 - Each stage must complete successfully before the next stage begins.
 - On any stage failure the runner halts immediately and exits with a non-zero code, reporting which stage failed.
+- The runner prints a summary line per stage indicating start, success, or failure.
 - The runner must not modify existing artifacts, stage scripts, or any files outside the expected output artifact for each stage.
 
 ## Acceptance Criteria
@@ -33,30 +34,35 @@ The system should provide a single entry-point shell script (`auto-workflow.sh` 
 - [ ] In **full** mode, all pipeline stages execute in order and produce their respective artifacts.
 - [ ] In **single** mode, exactly one named stage executes and produces its artifact.
 - [ ] In **range** mode, a contiguous subset of stages executes in order and produces their artifacts.
-- [ ] The runner composes existing scripts rather than reimplementing stage logic.
+- [ ] The runner composes existing scripts (`consume-stage-with-claude.sh` and related tooling) rather than reimplementing stage logic.
 - [ ] The runner exits with a non-zero code and a clear error message if any stage fails, identifying the failing stage.
+- [ ] The runner provides summary-level progress output (which stage is running, pass/fail).
 - [ ] No new runtime dependencies are introduced beyond what the repository already uses.
 - [ ] The runner does not alter existing artifacts or stage scripts as a side-effect of its own operation.
 - [ ] Stage ordering matches the pipeline's established convention.
 
 ## Edge Cases
 
-- A stage's output artifact already exists before the runner starts. **Default behavior:** the runner overwrites it (re-runs the stage). This matches the existing single-stage behavior and avoids silent skips that hide stale artifacts. *(Flagged as an ambiguity from intake — this default is chosen to keep behavior simple and predictable.)*
-- The feature directory does not exist or is missing its intake file. The runner should fail immediately with a descriptive error before executing any stage.
-- The user specifies a stage name that does not exist or a range where `from` comes after `to` in the pipeline order. The runner should reject the input with a usage error.
-- The runner is invoked in a non-interactive environment (no TTY). It should operate without prompts, relying solely on arguments and exit codes.
+- **Stage output artifact already exists:** The runner re-runs the stage and overwrites the existing artifact. This avoids silent skips that could hide stale output. *(Resolved ambiguity from intake — overwrite chosen for simplicity and predictability.)*
+- **Feature directory missing or no intake artifact:** The runner fails immediately with a descriptive error before executing any stage.
+- **Invalid stage name or invalid range:** The runner rejects the input with a usage error (e.g., unrecognized stage name, or `from` stage comes after `to` stage in pipeline order).
+- **Range where start equals end:** Behaves identically to single-stage mode.
+- **Non-interactive environment (no TTY):** The runner operates without prompts, relying solely on arguments and exit codes.
+- **Interrupted mid-run (e.g., SIGINT):** Previously completed stage artifacts remain intact; only the in-progress stage may have partial output.
 
 ## Non-Goals
 
-- **Retry / skip logic on failure.** The runner halts on first failure. Retry or skip-and-continue behavior is out of scope for this feature.
-- **Auto-discovery of stages from the filesystem.** The stage list may be hardcoded or derived from a known convention; building a generic plugin/discovery system is not a goal.
-- **Verbose/silent logging modes.** Basic progress output (which stage is running, pass/fail) is expected, but a configurable verbosity system is out of scope.
-- **Parallelism.** Stages execute sequentially. Concurrent stage execution is not a goal.
-- **GUI, TUI, or interactive prompts.** The runner is a non-interactive CLI tool.
+- **Retry or skip logic on failure.** The runner halts on first failure. Retry or skip-and-continue behavior is out of scope.
+- **Generic stage auto-discovery.** The stage list may be hardcoded or derived from a known convention; a plugin or filesystem-scanning discovery system is not a goal.
+- **Configurable verbosity or log levels.** Basic progress output is expected, but a logging framework or verbosity flags are out of scope.
+- **Parallel stage execution.** Stages execute sequentially only.
+- **Interactive prompts during execution.** The runner is a non-interactive CLI tool.
+- **CI integration or webhook triggers.** The runner is a local script; CI plumbing is a separate concern.
 
 ## Assumptions
 
-- The existing `consume-stage-with-claude.sh` and related scripts are stable and can be called as black-box building blocks.
+- The existing `consume-stage-with-claude.sh` and related scripts are stable and can be called as black-box building blocks without modification.
 - The pipeline's stage ordering is well-defined and consistent (e.g., `00-intake`, `01-spec`, `02-plan`, etc.).
-- The runner will be a POSIX-compatible shell script, consistent with the repository's current tooling approach.
+- The runner is a bash shell script, consistent with the repository's current tooling approach.
 - Each stage produces exactly one output artifact at a predictable path.
+- The runner will be invoked from the repository root directory.

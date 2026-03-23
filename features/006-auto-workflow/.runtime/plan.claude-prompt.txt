@@ -9,12 +9,15 @@ Follow these instruction sources strictly:
 1. Skill prompt: /root/.openclaw/workspace/repos/agentic-sdd-pipeline/skills/sdd-plan/SKILL.md
 2. Subagent prompt: /root/.openclaw/workspace/repos/agentic-sdd-pipeline/subagents/planner.md
 3. Template shape: /root/.openclaw/workspace/repos/agentic-sdd-pipeline/templates/02-plan.md
-4. Input artifact: ./features/006-auto-workflow/01-spec.md
+4. Primary input artifact: ./features/006-auto-workflow/01-spec.md
+
 
 Requirements:
 - Read the instruction files and the input artifact.
+- Read any additional context files listed above.
 - Produce exactly one markdown document for the target output.
 - Write the result directly to: ./features/006-auto-workflow/02-plan.md
 - Preserve markdown clarity.
-- Do not modify any other files.
+- Do not modify any other files unless the stage explicitly requires repository changes.
+- For the implement stage, you may modify repository files as needed for the bounded task scope, but you must also write the implementation log to the target output path.
 - Do not ask follow-up questions; if ambiguity exists, capture it inside the output artifact according to the prompt rules.

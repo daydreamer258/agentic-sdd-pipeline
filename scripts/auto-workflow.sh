@@ -4,9 +4,11 @@ set -eu
 if [ $# -lt 2 ]; then
   echo "usage: $0 <feature-dir> <mode> [args...]" >&2
   echo "modes:" >&2
-  echo "  full [start-stage] [end-stage]" >&2
+  echo "  full [start-stage] [end-stage]   # default intake -> tasks" >&2
   echo "  single <stage>" >&2
   echo "  range <start-stage> <end-stage>" >&2
+  echo "notes:" >&2
+  echo "  - implement is now backend-consumable but should still be treated as bounded/experimental" >&2
   exit 1
 fi
 
@@ -53,7 +55,7 @@ expected_artifact_for_stage() {
 consume_stage() {
   STAGE="$1"
   case "$STAGE" in
-    intake|spec|plan|tasks|validate)
+    intake|spec|plan|tasks|implement|validate)
       "$ROOT_DIR/scripts/consume-stage-with-claude.sh" "$FEATURE_DIR" "$STAGE"
       ;;
     *)
@@ -68,7 +70,6 @@ run_stage_once() {
   ARTIFACT=$(expected_artifact_for_stage "$STAGE")
 
   "$ROOT_DIR/scripts/execute-stage.sh" "$FEATURE_DIR" "$STAGE"
-
   consume_stage "$STAGE"
 
   if [ ! -f "$FEATURE_DIR/$ARTIFACT" ]; then
@@ -84,7 +85,7 @@ run_stage_once() {
 }
 
 resolve_full_defaults() {
-  START_STAGE="${1:-spec}"
+  START_STAGE="${1:-intake}"
   END_STAGE="${2:-tasks}"
   echo "$START_STAGE $END_STAGE"
 }
@@ -121,13 +122,6 @@ END_ORDER=$(stage_order "$END_STAGE")
 IDX=1
 for STAGE in $STAGES; do
   if [ "$IDX" -ge "$START_ORDER" ] && [ "$IDX" -le "$END_ORDER" ]; then
-    run_stage_once "$STAGE"
-  fi
-  IDX=$((IDX + 1))
-done
-
-echo "Auto workflow completed: $FEATURE_DIR ($START_STAGE -> $END_STAGE)"
-T_ORDER" ] && [ "$IDX" -le "$END_ORDER" ]; then
     run_stage_once "$STAGE"
   fi
   IDX=$((IDX + 1))
