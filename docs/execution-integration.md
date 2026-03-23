@@ -37,10 +37,10 @@ After stage bundles, a stage handler now produces a concrete execution package t
 
 - a human operator
 - a wrapper script
-- a future Skill backend
-- a future Subagent launcher
+- a backend consumer
+- a future Skill/Subagent launcher
 
-This is a practical intermediate step before full execution automation.
+This is a practical intermediate step before fuller automation.
 
 ---
 
@@ -50,11 +50,14 @@ This is a practical intermediate step before full execution automation.
 Builds `features/<feature>/.runtime/<stage>.bundle.md`.
 
 ### `runtime/handlers/*.sh`
-Now call `build-stage-bundle.sh` and surface the resulting bundle path.
+Call `build-stage-bundle.sh` and surface the resulting bundle path.
 
 ### `features/<feature>/.runtime/<stage>.bundle.md`
 A generated execution package for the current stage.
-This can be handed to a human, wrapper, or future backend.
+This can be handed to a human, wrapper, or backend.
+
+### `scripts/consume-stage-with-claude.sh`
+A first real backend consumer that can now consume the early text-centric stages of the workflow.
 
 ---
 
@@ -76,26 +79,40 @@ A bundle currently records:
 
 ---
 
-## 6. Current limitation
+## 6. Current status
 
-The bundle is not yet automatically consumed by a live Skill/Subagent backend.
-
-However, this is now a much smaller remaining gap.
-The system already knows:
-- what stage is active
-- what should be read
-- what should be written
-- which prompt files should guide execution
-
----
-
-## 7. Summary
-
-Execution integration is now partially landed:
+Execution integration is now partially but meaningfully landed:
 
 - runtime wiring exists
 - prompt files exist
 - stage bundles now connect them
-- a real Claude backend has already consumed the `spec` and `plan` stages
+- a real Claude backend has already consumed the `spec`, `plan`, `tasks`, and `validate` stages
 
-The next step is to extend this pattern to later stages and reduce duplication between bundles and backend-specific prompts.
+This means the system has gone beyond orchestration-only wiring and now has real backend-produced artifacts along the early SDD path.
+
+---
+
+## 7. Current limitation
+
+The backend consumer still does not:
+
+- auto-run `complete-artifact.sh`
+- auto-chain to the next stage
+- consume the `.bundle.md` file as the only source of truth
+- hide all stage-specific mapping behind a cleaner adapter layer
+
+So this is not yet a fully automatic execution engine.
+It is, however, a real execution-integrated workflow.
+
+---
+
+## 8. Summary
+
+Execution integration has crossed an important threshold:
+
+- runtime wiring exists
+- prompt files exist
+- stage bundles exist
+- real backend consumption exists
+
+The next step is to tighten the integration so the backend relies more directly on bundles and less on backend-specific glue.

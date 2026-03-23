@@ -30,6 +30,20 @@ case "$STAGE" in
     ROLE_FILE="$ROOT_DIR/subagents/planner.md"
     TEMPLATE_FILE="$ROOT_DIR/templates/02-plan.md"
     ;;
+  tasks)
+    INPUT_FILE="$FEATURE_DIR/02-plan.md"
+    OUTPUT_FILE="$FEATURE_DIR/06-tasks.md"
+    SKILL_FILE="$ROOT_DIR/skills/sdd-tasks/SKILL.md"
+    ROLE_FILE="$ROOT_DIR/subagents/task-decomposer.md"
+    TEMPLATE_FILE="$ROOT_DIR/templates/06-tasks.md"
+    ;;
+  validate)
+    INPUT_FILE="$FEATURE_DIR/07-implementation-log.md"
+    OUTPUT_FILE="$FEATURE_DIR/08-validation.md"
+    SKILL_FILE="$ROOT_DIR/skills/sdd-validate/SKILL.md"
+    ROLE_FILE="$ROOT_DIR/subagents/validator.md"
+    TEMPLATE_FILE="$ROOT_DIR/templates/08-validation.md"
+    ;;
   *)
     echo "unsupported stage for Claude consumer: $STAGE" >&2
     exit 3

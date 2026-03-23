@@ -1,5 +1,12 @@
 {
-  "current_stage": "validate",
-  "status": "artifact_written",
-  "last_artifact": "08-validation.md"
+  "feature_id": "",
+  "feature_slug": "",
+  "feature_title": "",
+  "current_stage": "spec",
+  "status": "ready_for_skill",
+  "last_artifact": "08-validation.md",
+  "next_stage": "plan",
+  "last_updated_at": "2026-03-23T04:54:48Z",
+  "validation_result": "pending",
+  "needs_review": "false"
 }

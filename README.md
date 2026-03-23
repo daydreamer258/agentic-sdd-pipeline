@@ -46,8 +46,9 @@ It currently contains:
 - role-specific Subagent prompts
 - stage bundle generation for execution handoff
 - real pilot features and runtime demos
+- first real backend-driven stages using Claude Code CLI
 
-This means the repo now contains a **lightweight runnable skeleton with a real prompt layer and execution bundles**, not just theory.
+This means the repo now contains a **lightweight runnable skeleton with a real prompt layer, execution bundles, and backend consumption**, not just theory.
 
 ---
 
@@ -180,7 +181,7 @@ The current repo includes a minimal runnable path.
 - dispatch stage handlers through runtime wiring
 - maintain richer `state.json` metadata
 - generate stage bundles for execution handoff
-- let a real Claude Code backend consume the `spec` and `plan` stages and produce `01-spec.md` / `02-plan.md`
+- let a real Claude Code backend consume the `spec`, `plan`, `tasks`, and `validate` stages
 - check implementation prerequisites before entering implementation
 
 ### Quick demo
@@ -210,10 +211,13 @@ This is intentionally minimal, but it is enough to prove the workflow skeleton i
 ```sh
 ./scripts/feature-summary.sh ./features/002-runtime-demo
 ./scripts/consume-stage-with-claude.sh ./features/005-claude-spec-consumer spec
+./scripts/consume-stage-with-claude.sh ./features/005-claude-spec-consumer plan
+./scripts/consume-stage-with-claude.sh ./features/005-claude-spec-consumer tasks
+./scripts/consume-stage-with-claude.sh ./features/005-claude-spec-consumer validate
 ```
 
 - `feature-summary.sh` prints a lightweight summary of a feature folder's current state and core artifact presence.
-- `consume-stage-with-claude.sh` proves first backend consumption for the `spec` stage.
+- `consume-stage-with-claude.sh` now proves backend-driven generation for `spec`, `plan`, `tasks`, and `validate`.
 
 ---
 
@@ -294,7 +298,7 @@ This repository is relevant if you are:
 
 ## Project status
 
-This repository is currently in the **lightweight runnable v1 skeleton with runtime wiring, prompt layer, execution bundles, and first backend consumption** stage.
+This repository is currently in the **lightweight runnable v1 skeleton with runtime wiring, prompt layer, execution bundles, and backend-driven early-stage loop** stage.
 
 What has been done:
 
@@ -308,16 +312,16 @@ What has been done:
 - added stage-specific Skill prompt files
 - added role-specific Subagent prompt files
 - added stage bundle generation to connect runtime state with prompt files
-- proved first backend consumption with Claude Code on the `spec` stage
+- proved real backend consumption with Claude Code on the `spec`, `plan`, `tasks`, and `validate` stages
 - ran real pilot features through the workflow
 
 What comes next:
 
-- extend backend consumers beyond `spec`
+- decide whether `.runtime/` execution artifacts should remain versioned long-term
 - reduce prompt duplication by leaning more on stage bundles
-- refine templates based on more pilots
-- strengthen validation behavior
 - add retrospective flow
+- strengthen validation behavior
+- consider auto-complete / auto-chain after successful backend consumption
 - run more diverse pilot features
 
 ---
@@ -344,4 +348,3 @@ A fuller reference list is included in:
 No license has been chosen yet.
 
 Until a license is added, treat this repository as **all rights reserved by default**.
-is repository as **all rights reserved by default**.

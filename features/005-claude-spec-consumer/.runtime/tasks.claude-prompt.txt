@@ -1,0 +1,20 @@
+You are consuming a stage bundle for the lightweight SDD pipeline.
+
+Your task: execute the 'tasks' stage and write the output artifact.
+
+Feature directory:
+./features/005-claude-spec-consumer
+
+Follow these instruction sources strictly:
+1. Skill prompt: /root/.openclaw/workspace/repos/agentic-sdd-pipeline/skills/sdd-tasks/SKILL.md
+2. Subagent prompt: /root/.openclaw/workspace/repos/agentic-sdd-pipeline/subagents/task-decomposer.md
+3. Template shape: /root/.openclaw/workspace/repos/agentic-sdd-pipeline/templates/06-tasks.md
+4. Input artifact: ./features/005-claude-spec-consumer/02-plan.md
+
+Requirements:
+- Read the instruction files and the input artifact.
+- Produce exactly one markdown document for the target output.
+- Write the result directly to: ./features/005-claude-spec-consumer/06-tasks.md
+- Preserve markdown clarity.
+- Do not modify any other files.
+- Do not ask follow-up questions; if ambiguity exists, capture it inside the output artifact according to the prompt rules.
