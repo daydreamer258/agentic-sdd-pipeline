@@ -2,47 +2,57 @@
 
 ## Architecture Summary
 
-The feature delivers a single shell script (`consume-stage-with-claude.sh`) that acts as the first real backend consumer in the SDD pipeline. The script takes a feature directory and a stage name, assembles a stage bundle (a prompt text file referencing the skill prompt, subagent prompt, template, and input artifact), and passes it to the Claude Code CLI for execution. Claude Code reads the referenced files, produces the output artifact, and writes it directly into the feature directory.
+This feature introduces a single shell script that serves as the first real backend consumer in the SDD pipeline. The script (`consume-stage-with-claude.sh`) accepts a feature directory and stage name, assembles a stage bundle (a prompt text file referencing skill, subagent, template, and input artifact paths), and invokes Claude Code CLI to produce the output artifact.
 
-The architecture is deliberately minimal: one shell script orchestrates context assembly, one prompt file carries all stage context, and one Claude Code invocation performs the work. There is no framework, no plugin system, and no daemon — just a script that wires existing prompt-layer files into a single CLI call.
+The design is intentionally minimal: one shell script handles orchestration, one generated prompt file carries all stage context, and one Claude Code invocation performs the work. There is no framework, plugin system, or persistent process. All intelligence lives in the existing prompt layer; the script is a thin coordinator that wires files into a single CLI call.
+
+The data flow is linear:
+
+```
+Operator → Script (validate + assemble) → Prompt file → Claude Code CLI → Output artifact
+```
 
 ## Components / Modules
 
-- **`scripts/consume-stage-with-claude.sh`** — The entry-point script. Accepts `<feature-dir>` and `<stage>` arguments. Responsibilities:
-  1. Validate that the feature directory, intake artifact, and prompt-layer files (skill, subagent, template) all exist.
-  2. Resolve file paths for the stage's skill prompt, subagent prompt, template, and input artifact based on the stage name.
-  3. Assemble a stage bundle prompt file (a text file with instructions and file references) and write it to `<feature-dir>/.runtime/<stage>.claude-prompt.txt`.
-  4. Invoke `claude` CLI, passing the prompt file as input.
-  5. Exit with a clear error if any precondition fails.
+- **`scripts/consume-stage-with-claude.sh`** — Entry-point shell script. Accepts `<feature-dir>` and `<stage>` as arguments. Responsibilities:
+  1. Parse and validate arguments.
+  2. Resolve paths for the stage's skill prompt (`skills/sdd-<stage>/SKILL.md`), subagent prompt (`subagents/<role>.md`), template (`templates/<NN>-<stage>.md`), and input artifact (previous stage's output file).
+  3. Validate that all resolved files exist; exit with a clear error if any are missing.
+  4. Assemble a stage bundle prompt file and write it to `<feature-dir>/.runtime/<stage>.claude-prompt.txt`.
+  5. Invoke `claude` CLI with the prompt file in non-interactive mode.
 
-- **Stage bundle prompt file** (`<feature-dir>/.runtime/<stage>.claude-prompt.txt`) — A generated text file that tells Claude Code what to read, what to produce, and where to write. This is the sole interface between the script and the consumer. It references:
-  - The skill prompt (`skills/sdd-<stage>/SKILL.md`)
-  - The subagent prompt (`subagents/<role>.md`)
-  - The template (`templates/<NN>-<stage>.md`)
-  - The input artifact (the previous stage's output, e.g., `00-intake.md` for the spec stage)
+- **Stage bundle prompt file** (`<feature-dir>/.runtime/<stage>.claude-prompt.txt`) — A generated text file that serves as the sole interface between the script and Claude Code. It instructs the consumer on which files to read, what to produce, and where to write the output. All context is mediated through this file; nothing is hard-coded into the CLI invocation.
 
-- **Prompt layer files (existing, not modified)** — `skills/sdd-spec/SKILL.md`, `subagents/spec-writer.md`, `templates/01-spec.md`. These are consumed as-is by the backend.
+- **Prompt layer (existing, read-only)** — `skills/sdd-spec/SKILL.md`, `subagents/spec-writer.md`, `templates/01-spec.md`. These files define behavioral rules, role constraints, and output structure. They are consumed as-is and must not be modified by this feature.
+
+- **Input artifact** — `features/<feature>/00-intake.md`. The source material that Claude Code transforms into the output.
+
+- **Output artifact** — `features/<feature>/01-spec.md`. The sole file written by Claude Code during execution.
 
 ## Constraints and Rationale
 
-- **Single-script, no framework.** The spec explicitly excludes a general-purpose consumer framework. A standalone shell script keeps the blast radius small and avoids premature abstraction. Future stages can reuse or fork the script without coordination overhead.
-- **Stage bundle as sole context interface.** The consumer must receive all context through the assembled prompt file, not through hardcoded paths inside Claude Code. This keeps the consumer generic across feature directories and makes the contract between orchestration and execution explicit.
-- **Claude Code CLI as the only backend.** No abstraction over different LLM backends. The script calls `claude` directly. This is appropriate for v1; abstracting the backend is future work.
-- **No state machine advancement.** The script produces the artifact and exits. It does not update `state.json` or advance the pipeline. The operator (or a separate wrapper) is responsible for state transitions.
-- **Feature-directory-agnostic.** The script must work for any feature directory with a valid intake file, not just feature 005. All paths are derived from the arguments, not hardcoded.
-- **Fail-fast on missing inputs.** If the intake, skill, subagent, or template file is missing, the script exits with a non-zero code and a descriptive error before invoking Claude Code.
+- **No framework or abstraction layer.** The spec excludes a general-purpose consumer framework or plugin system. A standalone POSIX shell script keeps complexity minimal and avoids premature abstraction appropriate for a lightweight pilot.
+- **Bundle-mediated context only.** All context must flow through the assembled stage bundle prompt file, not through hard-coded paths in the Claude invocation. This satisfies AC-4 and keeps the prompt layer as the single source of truth.
+- **Single output artifact, no side effects.** Claude Code must create or modify only `01-spec.md` inside the feature directory. No other files may be touched (AC-5). The `.runtime/` directory is used only by the script itself for the prompt file.
+- **Feature-directory-agnostic.** The script must work for any feature directory with a valid `00-intake.md`, not just feature 005 (AC-6). All paths are derived from the arguments and naming conventions, never hard-coded to a specific feature.
+- **Fail-fast on missing inputs.** The script validates existence of the intake file and all prompt-layer files before invoking Claude Code. Invoking an LLM with missing context wastes time and produces unreliable output.
+- **Non-interactive execution.** Claude Code must run without prompting the operator for clarification. Ambiguities are captured inside the output artifact per the spec's edge case requirements.
+- **No state machine advancement.** The script produces the artifact and exits. It does not update `state.json` or advance the pipeline. State management is a separate concern.
 
 ## Risks
 
-- **Claude Code output fidelity.** The consumer relies on Claude Code following the prompt instructions precisely (template structure, no extra files, no follow-up questions). If the model drifts from instructions, the output artifact may not meet acceptance criteria. Mitigation: the prompt file is explicit and tightly scoped; the operator reviews output post-hoc.
-- **Stage-name-to-file mapping brittleness.** The script maps stage names to file paths using naming conventions (e.g., `spec` → `skills/sdd-spec/`, `templates/01-spec.md`, `00-intake.md`). If naming conventions change, the script breaks silently. Mitigation: validate that resolved paths exist before invocation; document the naming convention in the script.
-- **Prompt file path resolution across working directories.** The prompt file contains file paths that Claude Code must resolve. If Claude Code's working directory differs from expectations, file reads will fail. Mitigation: use paths relative to the repository root and ensure the script invokes Claude Code from the repo root.
-- **No automated quality validation.** The spec explicitly excludes quality gates, so a structurally complete but semantically poor artifact will pass. This is accepted for v1; the operator is the quality gate.
+- **Claude Code output fidelity.** The consumer relies on Claude Code following prompt instructions precisely — correct template structure, no extra files, no follow-up questions. If the model deviates, the output may not meet acceptance criteria. Mitigation: the prompt file is explicit and tightly scoped; the operator reviews output manually.
+- **Stage-name-to-file mapping brittleness.** The script maps stage names to file paths using naming conventions (e.g., `spec` → `01-spec.md`, `00-intake.md` as input). If naming conventions evolve, the mapping breaks. Mitigation: validate that all resolved paths exist before invocation and document the convention in the script.
+- **Working directory sensitivity.** The prompt file contains relative paths that Claude Code must resolve from the repository root. If Claude Code's working directory is unexpected, file reads will fail silently or produce wrong output. Mitigation: the script should explicitly set the working directory when invoking `claude` CLI.
+- **No automated quality gate.** The spec excludes automated quality validation, so a structurally complete but semantically incorrect spec can pass. This is an accepted v1 limitation; the operator is the quality gate.
+- **CLI flag instability.** The `claude` CLI is relatively new; invocation flags for non-interactive mode or prompt file input may change between versions. Mitigation: document the tested CLI version and pin to known-working invocation patterns.
 
 ## Validation Approach
 
-- **Manual end-to-end test:** Run `consume-stage-with-claude.sh features/005-claude-spec-consumer spec` and verify that `01-spec.md` is created with all template sections present.
-- **Cross-feature test:** Run the script against a second feature directory (e.g., `features/003-feature-summary-cli`) to confirm it is not hardcoded to feature 005.
-- **Precondition failure test:** Run the script with a missing intake file and with a missing prompt-layer file; verify it exits with a clear error and does not invoke Claude Code.
-- **Artifact isolation check:** After a successful run, verify that no files other than `01-spec.md` were created or modified inside the feature directory (excluding `.runtime/`).
-- **Structural completeness check:** Confirm the generated `01-spec.md` contains all section headers defined in `templates/01-spec.md`.
+- **End-to-end execution:** Run `consume-stage-with-claude.sh features/005-claude-spec-consumer spec` and verify that `01-spec.md` is created in the feature directory with all template sections present (Problem Statement, Users/Actors, Desired Behavior, Acceptance Criteria, Edge Cases, Non-Goals, Assumptions).
+- **Cross-feature portability:** Run the script against a different feature directory with a valid `00-intake.md` to confirm it is not coupled to feature 005.
+- **Precondition failure — missing intake:** Run with a feature directory that lacks `00-intake.md`; verify the script exits non-zero with a descriptive error and does not invoke Claude Code.
+- **Precondition failure — missing prompt layer:** Remove or rename a prompt-layer file; verify the script exits non-zero with a descriptive error before invocation.
+- **Artifact isolation:** Compare the feature directory contents before and after a successful run; confirm only `01-spec.md` was created or modified (excluding `.runtime/`).
+- **Structural completeness:** Parse the generated `01-spec.md` and confirm all section headings from the template are present.
+- **Manual semantic review:** The operator reads the generated spec to verify it is behavior-oriented, aligned with the intake, and does not expand scope.

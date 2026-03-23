@@ -252,6 +252,9 @@ This repo currently treats SDD as having three practical maturity levels:
 - [`docs/项目介绍说明.md`](docs/项目介绍说明.md)
 - [`docs/命令使用说明.md`](docs/命令使用说明.md)
 
+### Auto workflow
+- [`docs/auto-workflow.md`](docs/auto-workflow.md)
+
 ### Overview and research
 - [`docs/shareable-overview.md`](docs/shareable-overview.md)
 
@@ -352,3 +355,10 @@ A fuller reference list is included in:
 No license has been chosen yet.
 
 Until a license is added, treat this repository as **all rights reserved by default**.
+ghts reserved by default**.
+is repository as **all rights reserved by default**.
+ghts reserved by default**.
+ has been chosen yet.
+
+Until a license is added, treat this repository as **all rights reserved by default**.
+ghts reserved by default**.
