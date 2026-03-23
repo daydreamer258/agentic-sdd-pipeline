@@ -180,7 +180,7 @@ The current repo includes a minimal runnable path.
 - dispatch stage handlers through runtime wiring
 - maintain richer `state.json` metadata
 - generate stage bundles for execution handoff
-- let a real Claude Code backend consume the `spec` stage and produce `01-spec.md`
+- let a real Claude Code backend consume the `spec` and `plan` stages and produce `01-spec.md` / `02-plan.md`
 - check implementation prerequisites before entering implementation
 
 ### Quick demo
@@ -344,3 +344,4 @@ A fuller reference list is included in:
 No license has been chosen yet.
 
 Until a license is added, treat this repository as **all rights reserved by default**.
+is repository as **all rights reserved by default**.

@@ -2,11 +2,11 @@
   "feature_id": "005",
   "feature_slug": "claude-spec-consumer",
   "feature_title": "claude-spec-consumer",
-  "current_stage": "spec",
+  "current_stage": "plan",
   "status": "artifact_written",
-  "last_artifact": "01-spec.md",
-  "next_stage": "plan",
-  "last_updated_at": "2026-03-23T05:04:48Z",
+  "last_artifact": "02-plan.md",
+  "next_stage": "tasks",
+  "last_updated_at": "2026-03-23T07:21:57Z",
   "validation_result": "pending",
   "needs_review": "false"
 }

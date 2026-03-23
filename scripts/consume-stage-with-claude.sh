@@ -23,6 +23,13 @@ case "$STAGE" in
     ROLE_FILE="$ROOT_DIR/subagents/spec-writer.md"
     TEMPLATE_FILE="$ROOT_DIR/templates/01-spec.md"
     ;;
+  plan)
+    INPUT_FILE="$FEATURE_DIR/01-spec.md"
+    OUTPUT_FILE="$FEATURE_DIR/02-plan.md"
+    SKILL_FILE="$ROOT_DIR/skills/sdd-plan/SKILL.md"
+    ROLE_FILE="$ROOT_DIR/subagents/planner.md"
+    TEMPLATE_FILE="$ROOT_DIR/templates/02-plan.md"
+    ;;
   *)
     echo "unsupported stage for Claude consumer: $STAGE" >&2
     exit 3

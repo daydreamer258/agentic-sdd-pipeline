@@ -96,5 +96,6 @@ Execution integration is now partially landed:
 - runtime wiring exists
 - prompt files exist
 - stage bundles now connect them
+- a real Claude backend has already consumed the `spec` and `plan` stages
 
-The next step would be to have a real backend consume the bundle automatically.
+The next step is to extend this pattern to later stages and reduce duplication between bundles and backend-specific prompts.

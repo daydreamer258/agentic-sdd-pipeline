@@ -5,7 +5,7 @@
 This document explains the first real backend consumer integration for the lightweight SDD workflow.
 
 The immediate goal is not full automation across all stages.
-The immediate goal is to prove that a real backend can consume a stage and produce an artifact.
+The immediate goal is to prove that a real backend can consume early text-centric stages and produce artifacts.
 
 ---
 
@@ -23,7 +23,7 @@ Current scope:
 
 ---
 
-## 3. Why start with `spec`
+## 3. Why start with `spec` and then `plan`
 
 `spec` is the cleanest first stage to automate because:
 
@@ -32,7 +32,11 @@ Current scope:
 - it is mostly text transformation
 - it does not yet require direct code modification
 
-That makes it the safest stage for the first backend integration.
+After `spec`, `plan` is the natural second stage because:
+
+- it consumes an already structured artifact (`01-spec.md`)
+- it still remains primarily markdown generation
+- it advances the workflow without yet requiring code edits
 
 ---
 
