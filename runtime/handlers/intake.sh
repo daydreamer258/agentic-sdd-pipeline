@@ -2,5 +2,7 @@
 set -eu
 
 FEATURE_DIR="$1"
+ROOT_DIR="$(CDPATH= cd -- "$(dirname -- "$0")/../.." && pwd)"
+BUNDLE_FILE=$("$ROOT_DIR/scripts/build-stage-bundle.sh" "$FEATURE_DIR" intake)
 echo "Handler ready: intake"
-echo "Read raw request context and write: $FEATURE_DIR/00-intake.md"
+echo "Stage bundle: $BUNDLE_FILE"

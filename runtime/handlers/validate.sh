@@ -2,8 +2,7 @@
 set -eu
 
 FEATURE_DIR="$1"
+ROOT_DIR="$(CDPATH= cd -- "$(dirname -- "$0")/../.." && pwd)"
+BUNDLE_FILE=$("$ROOT_DIR/scripts/build-stage-bundle.sh" "$FEATURE_DIR" validate)
 echo "Handler ready: validate"
-echo "Use skill: sdd-validate"
-echo "Suggested subagent: validator"
-echo "Read: $FEATURE_DIR/01-spec.md $FEATURE_DIR/02-plan.md $FEATURE_DIR/06-tasks.md $FEATURE_DIR/07-implementation-log.md"
-echo "Write: $FEATURE_DIR/08-validation.md"
+echo "Stage bundle: $BUNDLE_FILE"

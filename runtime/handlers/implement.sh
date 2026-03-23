@@ -2,7 +2,7 @@
 set -eu
 
 FEATURE_DIR="$1"
+ROOT_DIR="$(CDPATH= cd -- "$(dirname -- "$0")/../.." && pwd)"
+BUNDLE_FILE=$("$ROOT_DIR/scripts/build-stage-bundle.sh" "$FEATURE_DIR" implement)
 echo "Handler ready: implement"
-echo "Use bounded implementer or orchestrator"
-echo "Read: $FEATURE_DIR/01-spec.md $FEATURE_DIR/02-plan.md $FEATURE_DIR/06-tasks.md"
-echo "Write: code changes and $FEATURE_DIR/07-implementation-log.md"
+echo "Stage bundle: $BUNDLE_FILE"

@@ -44,9 +44,10 @@ It currently contains:
 - runtime wiring and handler dispatch
 - stage-specific Skill prompts
 - role-specific Subagent prompts
+- stage bundle generation for execution handoff
 - real pilot features and runtime demos
 
-This means the repo now contains a **lightweight runnable skeleton with a real prompt layer**, not just theory.
+This means the repo now contains a **lightweight runnable skeleton with a real prompt layer and execution bundles**, not just theory.
 
 ---
 
@@ -298,7 +299,7 @@ What has been done:
 
 What comes next:
 
-- wire the prompt layer to real execution backends
+- wire stage bundles to real execution backends
 - refine templates based on more pilots
 - strengthen validation behavior
 - add retrospective flow
@@ -328,3 +329,7 @@ A fuller reference list is included in:
 No license has been chosen yet.
 
 Until a license is added, treat this repository as **all rights reserved by default**.
+reserved by default**.
+ved by default**.
+ **all rights reserved by default**.
+t**.

@@ -2,8 +2,7 @@
 set -eu
 
 FEATURE_DIR="$1"
+ROOT_DIR="$(CDPATH= cd -- "$(dirname -- "$0")/../.." && pwd)"
+BUNDLE_FILE=$("$ROOT_DIR/scripts/build-stage-bundle.sh" "$FEATURE_DIR" spec)
 echo "Handler ready: spec"
-echo "Use skill: sdd-spec"
-echo "Suggested subagent: spec-writer"
-echo "Read: $FEATURE_DIR/00-intake.md"
-echo "Write: $FEATURE_DIR/01-spec.md"
+echo "Stage bundle: $BUNDLE_FILE"
