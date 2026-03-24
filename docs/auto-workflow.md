@@ -23,7 +23,7 @@ Run a contiguous workflow automatically.
 ```
 
 Defaults:
-- start stage: `spec`
+- start stage: `intake`
 - end stage: `tasks`
 
 ### `single`
@@ -73,7 +73,7 @@ This creates the first real chained execution path in the repository.
 ### Full early-stage flow
 
 ```sh
-./scripts/auto-workflow.sh ./features/005-claude-spec-consumer full spec tasks
+./scripts/auto-workflow.sh ./features/006-auto-workflow full intake tasks
 ```
 
 ### Run one stage only
@@ -85,7 +85,7 @@ This creates the first real chained execution path in the repository.
 ### Run a range
 
 ```sh
-./scripts/auto-workflow.sh ./features/005-claude-spec-consumer range plan validate
+./scripts/auto-workflow.sh ./features/005-claude-spec-consumer range plan tasks
 ```
 
 ---
@@ -114,4 +114,3 @@ With `auto-workflow.sh`, the project now supports:
 - stage range execution
 
 That is the first step toward a more truly agentic pipeline.
-t step toward a more truly agentic pipeline.

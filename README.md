@@ -202,7 +202,7 @@ The current repo supports:
 - dispatch stage handlers through runtime wiring
 - maintain richer `state.json` metadata
 - generate stage bundles for execution handoff
-- let a real Claude Code backend consume the `intake`, `spec`, `plan`, `tasks`, and `validate` stages
+- let a real Claude Code backend consume the `intake`, `spec`, `plan`, `tasks`, `implement`, and `validate` stages
 - run automated workflows in `full`, `single`, and `range` modes
 - apply risk assessment and checkpoint generation around `implement`
 
