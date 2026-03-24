@@ -253,6 +253,7 @@ This repo currently treats SDD as having three practical maturity levels:
 - [`docs/命令使用说明.md`](docs/命令使用说明.md)
 - [`docs/Claude-Code-中文上手-demo.md`](docs/Claude-Code-中文上手-demo.md)
 - [`docs/从0新建Feature的中文Demo.md`](docs/从0新建Feature的中文Demo.md)
+- [`docs/implement-checkpoint-进阶中文Demo.md`](docs/implement-checkpoint-进阶中文Demo.md)
 
 ### Auto workflow
 - [`docs/auto-workflow.md`](docs/auto-workflow.md)
