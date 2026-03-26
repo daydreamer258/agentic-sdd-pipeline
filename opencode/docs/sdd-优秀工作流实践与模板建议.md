@@ -423,9 +423,108 @@ workflow 应该围绕 artifacts 运转，而不是围绕“这一轮对话上下
 
 ---
 
+## 9. 依据与判断边界
+
+这篇文档里有两类内容：
+
+- **公开实践总结**：来自 Spec Kit、Intent-Driven、Fowler、Thoughtworks 等资料
+- **结合当前仓库经验的归纳判断**：来自我们已经做过的 lightweight shell-based SDD pipeline 经验
+
+为了避免混在一起，这里单独说明。
+
+### 9.1 关于 SDD 为什么要分 spec / plan / tasks
+
+以下结论主要参考 GitHub Spec Kit / Microsoft 的资料：
+
+- `/specify` 负责定义“what / why”
+- `/plan` 负责定义“how”
+- `/tasks` 负责把 spec + plan 拆成可执行任务
+- helper scripts / templates 是 workflow 基础设施的一部分
+- constitution / project principles 会影响 plan 和后续实现
+
+依据链接：
+- <https://developer.microsoft.com/blog/spec-driven-development-spec-kit/>
+- <https://github.blog/ai-and-ml/generative-ai/spec-driven-development-with-ai-get-started-with-a-new-open-source-toolkit/>
+- <https://github.com/github/spec-kit>
+
+### 9.2 关于“spec 必须 human-reviewable、要避免过大文档”
+
+以下结论主要参考 Intent-Driven 的最佳实践：
+
+- 规格必须 human-reviewable
+- 要从 minimal spec 开始
+- 要 meaningful decomposition
+- 要持续校验 spec 与实现是否漂移
+- 要避免 specification theater 与 AI-generated bloat
+
+依据链接：
+- <https://intent-driven.dev/knowledge/best-practices/>
+
+### 9.3 关于“spec-first 之外，还要持续锚定实现”的判断
+
+以下判断主要来自 Martin Fowler、Thoughtworks 以及公开 SDD 讨论：
+
+- spec 的价值不只是前置规划，还在于后续实现与演进锚点
+- plan / tasks / validation 是防止 spec 退化成摆设的必要层
+- 没有验证和反馈，spec 很容易与代码漂移
+
+依据链接：
+- <https://martinfowler.com/articles/exploring-gen-ai/sdd-3-tools.html>
+- <https://www.thoughtworks.com/en-us/insights/blog/agile-engineering-practices/spec-driven-development-unpacking-2025-new-engineering-practices>
+
+### 9.4 关于本文给出的阶段模板建议
+
+像下面这些内容：
+
+- `00-intake.md`
+- `01-spec.md`
+- `02-plan.md`
+- `06-tasks.md`
+- `07-implementation-log.md`
+- `08-validation.md`
+- `09-retrospective.md`
+
+以及：
+
+- implement checkpoint
+- validation gate
+- artifact-first
+- stage order
+
+这些并不是直接照搬某一个外部来源，而是：
+
+> **把外部 SDD 实践，与我们当前仓库已经验证过的 lightweight pipeline 经验，合并后整理出的 v1 建议。**
+
+所以这部分应该理解成：
+
+- 有公开实践支撑方向
+- 但具体文件命名、阶段切法、模板字段，是我们的工程化整理，不是某篇文章的原句
+
+### 9.5 当前文档的可信边界
+
+这篇文档适合用来：
+
+- 对齐 workflow 设计共识
+- 决定 v1 先保留哪些阶段和模板
+- 避免过早陷入“多 agent 炫技编排”
+
+但不应该被理解成：
+
+- 已经被业界统一标准化
+- 所有项目都必须照这个模板执行
+- 这就是唯一正确答案
+
+更准确地说，它是：
+
+> **一份以公开 SDD 实践为依据、结合当前仓库经验整理出的 OpenCode workflow 设计参考。**
+
+---
+
 ## 参考来源
 
 - Microsoft / GitHub Spec Kit 相关文章：<https://developer.microsoft.com/blog/spec-driven-development-spec-kit/>
+- GitHub Spec Kit 项目：<https://github.com/github/spec-kit>
+- GitHub Blog 关于 Spec Kit：<https://github.blog/ai-and-ml/generative-ai/spec-driven-development-with-ai-get-started-with-a-new-open-source-toolkit/>
 - Intent-Driven best practices：<https://intent-driven.dev/knowledge/best-practices/>
 - Martin Fowler 关于 SDD 的文章：<https://martinfowler.com/articles/exploring-gen-ai/sdd-3-tools.html>
 - Thoughtworks 对 SDD 的观察：<https://www.thoughtworks.com/en-us/insights/blog/agile-engineering-practices/spec-driven-development-unpacking-2025-new-engineering-practices>

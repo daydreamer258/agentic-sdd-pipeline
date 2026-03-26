@@ -344,6 +344,67 @@ OpenCode 提供的是：
 
 ---
 
+## 8. 依据与判断边界
+
+为了避免这篇文档看起来像“拍脑袋总结”，这里把关键判断和公开依据对齐一下。
+
+### 8.1 关于 OpenCode 的基础能力
+
+以下判断主要来自 OpenCode 官方文档：
+
+- OpenCode 是终端 / 桌面 / IDE 扩展形态的开源 AI coding agent
+- 支持安装、初始化、项目内 `/init`
+- 支持在项目内生成 `AGENTS.md`
+- 支持 Plan mode 与 Build mode 的工作方式
+- 支持 `@` 调用与多 agent / subagent 使用
+
+依据链接：
+- <https://opencode.ai/docs/>
+- <https://opencode.ai/docs/agents/>
+- <https://github.com/opencode-ai/opencode>
+
+### 8.2 关于 agent 可配置能力
+
+以下判断主要来自 OpenCode agents 文档：
+
+- agent 支持 `description`、`prompt`、`model`、`temperature`、`steps`
+- 支持 primary agent 与 subagent
+- 支持 project-level markdown agents（如 `.opencode/agents/*.md`）
+- 支持 permissions 控制 `edit` / `bash` / `webfetch`
+- 支持对特定 bash 命令做更细粒度权限限制
+
+依据链接：
+- <https://opencode.ai/docs/agents/>
+
+### 8.3 关于“OpenCode 适合承载 SDD workflow”的判断
+
+这一条不是 OpenCode 官方原文结论，而是我基于以下事实做的归纳判断：
+
+- OpenCode 有 Plan / Build 分层
+- OpenCode 有 agent / subagent / permission 机制
+- OpenCode 有项目级配置和 prompt 文件入口
+- OpenCode 有 terminal/bash 能力
+- 这些能力与 artifact-driven、phase-specific workflow 高度兼容
+
+所以这一条属于：
+
+> **基于官方能力描述做的 workflow 设计判断，而不是官方直接承诺。**
+
+### 8.4 当前文档的可信边界
+
+这篇文档目前是：
+
+- **一手依据**：OpenCode 官方 docs / agents docs / GitHub 项目页
+- **二手判断**：我从 workflow 设计角度做的归纳
+
+所以你应该把它理解成：
+
+- 不是 OpenCode 官方产品白皮书
+- 也不是已经被我们实战完全证明的最终架构
+- 而是用于指导 `opencode/` 目录下 workflow v1 设计的研究性结论
+
+---
+
 ## 参考来源
 
 - OpenCode 官方 docs: <https://opencode.ai/docs/>
